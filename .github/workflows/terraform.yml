@@ -1,0 +1,53 @@
+name: Terraform
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    env:
+      working-directory: '${{ github.workspace }}'
+    defaults:
+      run:
+        working-directory: ${{ env.working-directory }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    
+    - name: IAM Token
+      id: issue-iam-token
+      uses: yc-actions/yc-iam-token@v1
+      with:
+        yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+    - name: Set environment variables from secrets
+      run: |
+        echo "ACCESS_KEY=${{ secrets.ACCESS_KEY }}" >> $GITHUB_ENV
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+        echo "YC_CLOUD_ID=${{ secrets.YC_CLOUD_ID }}" >> $GITHUB_ENV
+        echo "YC_FOLDER_ID=${{ secrets.YC_FOLDER_ID }}" >> $GITHUB_ENV
+        echo "YC_TOKEN=${{ steps.issue-iam-token.outputs.token }}" >> $GITHUB_ENV
+    
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.8.0
+
+    - name: Terraform Format
+      id: fmt
+      run: terraform fmt -check
+      continue-on-error: true    
+
+    - name: Initialize Terraform
+      run: terraform init -input=false -backend-config="access_key=${{ env.ACCESS_KEY }}" -backend-config="secret_key=${{ env.SECRET_KEY }}"
+
+    - name: Plan Terraform changes
+      run: terraform plan -input=false -var="DB_USER=${{ env.DB_USER }}" -var="DB_PASSWORD=${{ env.DB_PASSWORD }}" -var="CLOUD_ID=${{ env.YC_CLOUD_ID }}" -var="FOLDER_ID=${{ env.YC_FOLDER_ID }}" -var="YC_TOKEN=${{ env.YC_TOKEN }}" -var="ACCESS_KEY=${{ env.ACCESS_KEY }}" -var="SECRET_KEY=${{ env.SECRET_KEY }}"
+
+    - name: Apply Terraform changes
+      run: terraform apply --auto-approve -var="DB_USER=${{ env.DB_USER }}" -var="DB_PASSWORD=${{ env.DB_PASSWORD }}" -var="CLOUD_ID=${{ env.YC_CLOUD_ID }}" -var="FOLDER_ID=${{ env.YC_FOLDER_ID }}" -var="YC_TOKEN=${{ env.YC_TOKEN }}" -var="ACCESS_KEY=${{ env.ACCESS_KEY }}" -var="SECRET_KEY=${{ env.SECRET_KEY }}"
