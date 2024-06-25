@@ -10,7 +10,7 @@ terraform {
     endpoints = {
       s3 = "https://storage.yandexcloud.net"
     }
-    bucket = "courseway"
+    bucket = "terraform-testing"
     region = "ru-central1"
     key    = "terraform-state/terraform.tfstate"
 
