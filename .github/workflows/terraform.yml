@@ -55,7 +55,7 @@ jobs:
       run: terraform init -input=false -backend-config="access_key=${{ env.ACCESS_KEY }}" -backend-config="secret_key=${{ env.SECRET_KEY }}"
 
     - name: Plan Terraform changes
-      run: terraform plan -input=false -var="DB_USER=${{ env.DB_USER }}" -var="DB_PASSWORD=${{ env.DB_PASSWORD }}" -var="CLOUD_ID=${{ env.YC_CLOUD_ID }}" -var="FOLDER_ID=${{ env.YC_FOLDER_ID }}" -var="YC_TOKEN=${{ env.YC_TOKEN }}" -var="ACCESS_KEY=${{ env.ACCESS_KEY }}" -var="SECRET_KEY=${{ env.SECRET_KEY }}" -var="ACCESS_KEY=${{ env.KUBERNETES_API_SERVER }}" -var="SECRET_KEY=${{ env.KUBERNETES_TOKEN }}"
+      run: terraform plan -input=false -var="DB_USER=${{ env.DB_USER }}" -var="DB_PASSWORD=${{ env.DB_PASSWORD }}" -var="CLOUD_ID=${{ env.YC_CLOUD_ID }}" -var="FOLDER_ID=${{ env.YC_FOLDER_ID }}" -var="YC_TOKEN=${{ env.YC_TOKEN }}" -var="ACCESS_KEY=${{ env.ACCESS_KEY }}" -var="SECRET_KEY=${{ env.SECRET_KEY }}" -var="KUBERNETES_API_SERVER=${{ env.KUBERNETES_API_SERVER }}" -var="KUBERNETES_TOKEN=${{ env.KUBERNETES_TOKEN }}"
 
     - name: Apply Terraform changes
-      run: terraform apply --auto-approve -var="DB_USER=${{ env.DB_USER }}" -var="DB_PASSWORD=${{ env.DB_PASSWORD }}" -var="CLOUD_ID=${{ env.YC_CLOUD_ID }}" -var="FOLDER_ID=${{ env.YC_FOLDER_ID }}" -var="YC_TOKEN=${{ env.YC_TOKEN }}" -var="ACCESS_KEY=${{ env.ACCESS_KEY }}" -var="SECRET_KEY=${{ env.SECRET_KEY }}" -var="ACCESS_KEY=${{ env.KUBERNETES_API_SERVER }}" -var="SECRET_KEY=${{ env.KUBERNETES_TOKEN }}"
+      run: terraform apply --auto-approve -var="DB_USER=${{ env.DB_USER }}" -var="DB_PASSWORD=${{ env.DB_PASSWORD }}" -var="CLOUD_ID=${{ env.YC_CLOUD_ID }}" -var="FOLDER_ID=${{ env.YC_FOLDER_ID }}" -var="YC_TOKEN=${{ env.YC_TOKEN }}" -var="ACCESS_KEY=${{ env.ACCESS_KEY }}" -var="SECRET_KEY=${{ env.SECRET_KEY }}" -var="KUBERNETES_API_SERVER=${{ env.KUBERNETES_API_SERVER }}" -var="KUBERNETES_TOKEN=${{ env.KUBERNETES_TOKEN }}"
