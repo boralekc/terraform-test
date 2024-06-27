@@ -29,7 +29,7 @@ jobs:
       id: issue-iam-k8s_token
       uses: yc-actions/yc-iam-token@v1
       with:
-        yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+        yc-sa-json-credentials: ${{ secrets.KUBERNETES_KEY }}
 
     - name: Set environment variables from secrets
       run: |
