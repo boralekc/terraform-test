@@ -34,6 +34,9 @@ jobs:
         with:
           terraform_version: 1.8.0
 
+      - name: Инициализация Terraform для S3 бакета
+        run:  terraform init -input=false
+
       - name: Применение изменений для создания S3 бакета
         run: |
           terraform apply --auto-approve \
