@@ -105,3 +105,9 @@ resource "yandex_resourcemanager_folder_iam_binding" "images-puller" {
     "serviceAccount:${yandex_iam_service_account.k8s-sa.id}"
   ]
 }
+
+resource "null_resource" "get_kubeconfig" {
+  provisioner "local-exec" {
+    command = "yc managed-kubernetes cluster get-credentials ${yandex_kubernetes_cluster.k8s-master.id} --external --force"
+  }
+}

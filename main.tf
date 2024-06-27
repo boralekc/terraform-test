@@ -44,20 +44,6 @@ module "kubernetes" {
   disk_size           = 64
 }
 
-resource "null_resource" "get_kubeconfig" {
-  provisioner "local-exec" {
-    command = "yc managed-kubernetes cluster get-credentials ${yandex_kubernetes_cluster.k8s-master.id} --external --force"
-  }
-}
-
-output "cluster_name" {
-  value = module.kubernetes.cluster_name
-}
-
-output "kubeconfig" {
-  value = module.kubernetes.kubeconfig
-}
-
 # module "postgres" {
 #   source             = "./modules/postgres"
 #   folder_id          = var.FOLDER_ID
