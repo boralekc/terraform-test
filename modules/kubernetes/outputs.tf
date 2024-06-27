@@ -3,5 +3,5 @@ output "cluster_name" {
 }
 
 output "kubeconfig" {
-  value = yandex_kubernetes_cluster.k8s-master.kube_config.0.raw_config
+  value = yandex_kubernetes_cluster.k8s-master.kube_config.0.client_config_raw
 }
