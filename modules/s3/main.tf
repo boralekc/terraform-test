@@ -9,7 +9,7 @@ terraform {
 
 // Создание сервисного аккаунта
 resource "yandex_iam_service_account" "bucket" {
-  folder_id = var.folder_id
+  folder_id = var.FOLDER_ID
   name      = var.bucket_name
 }
 
