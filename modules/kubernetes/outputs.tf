@@ -1,7 +1,7 @@
-output "cluster_name" {
-  value = yandex_kubernetes_cluster.k8s-master.name
+output "cluster_id" {
+  value = yandex_kubernetes_cluster.k8s-master.id
 }
 
-output "kubeconfig" {
-  value = yandex_kubernetes_cluster.k8s-master.kube_config.0.client_config_raw
+output "cluster_name" {
+  value = yandex_kubernetes_cluster.k8s-master.name
 }

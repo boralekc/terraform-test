@@ -44,16 +44,19 @@ module "kubernetes" {
   disk_size           = 64
 }
 
-resource "null_resource" "run_ansible" {
+resource "null_resource" "get_kubeconfig" {
   provisioner "local-exec" {
-    command = <<EOT
-      ansible-playbook -i "${module.kubernetes.cluster_name}," \
-                       -e "kubeconfig=${module.kubernetes.kubeconfig}" \
-                       playbook.yml
-    EOT
+    command = "yc managed-kubernetes cluster get-credentials ${yandex_kubernetes_cluster.k8s-master.id} --external --force"
   }
 }
 
+output "cluster_name" {
+  value = module.kubernetes.cluster_name
+}
+
+output "kubeconfig" {
+  value = module.kubernetes.kubeconfig
+}
 
 # module "postgres" {
 #   source             = "./modules/postgres"
