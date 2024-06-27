@@ -30,6 +30,6 @@ variable "KUBERNETES_API_SERVER" {
   type = string
 }
 
-variable "KUBERNETES_KEY" {
+variable "KUBERNETES_TOKEN" {
   type = string
 }

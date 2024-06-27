@@ -48,7 +48,7 @@ module "semaphore" {
   source      = "./modules/semaphore"
   folder_id   = var.FOLDER_ID
   kubernetes_cluster_host = var.KUBERNETES_API_SERVER
-  kubernetes_cluster_token = var.KUBERNETES_KEY 
+  kubernetes_cluster_token = var.KUBERNETES_TOKEN
 }
 
 # module "postgres" {
