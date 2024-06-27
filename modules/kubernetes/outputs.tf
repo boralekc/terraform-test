@@ -1,7 +1,7 @@
 output "cluster_name" {
-  value = module.kubernetes.cluster_name
+  value = yandex_kubernetes_cluster.k8s-master.name
 }
 
 output "kubeconfig" {
-  value = module.kubernetes.kubeconfig
+  value = yandex_kubernetes_cluster.k8s-master.kube_config.0.raw_config
 }
