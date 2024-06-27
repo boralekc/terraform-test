@@ -4,11 +4,22 @@ variable "bucket_name" {
   default     = "s3-state"  
 }
 
-# variable "folder_id" {
-#   description = "Folder ID where resources will be created"
-#   type        = string
-# }
+variable "CLOUD_ID" {
+  description = "Cloud id"
+}
 
 variable "FOLDER_ID" {
   description = "Folder id"
+}
+
+variable "YC_TOKEN" {
+  description = "Secret key"
+}
+
+variable "ACCESS_KEY" {
+  type = string
+}
+
+variable "SECRET_KEY" {
+  type = string
 }
