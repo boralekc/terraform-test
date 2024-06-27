@@ -34,12 +34,6 @@ jobs:
         with:
           terraform_version: 1.8.0
 
-      - name: Инициализация Terraform для S3 бакета
-        run: |
-          terraform init -input=false \
-            -backend-config="access_key=${{ env.ACCESS_KEY }}" \
-            -backend-config="secret_key=${{ env.SECRET_KEY }}"
-
       - name: Применение изменений для создания S3 бакета
         run: |
           terraform apply --auto-approve \
