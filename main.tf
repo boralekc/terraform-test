@@ -10,14 +10,14 @@ terraform {
     endpoints = {
       s3 = "https://storage.yandexcloud.net"
     }
-    bucket = "terraform-testing"
+    bucket = "s3-state"
     region = "ru-central1"
     key    = "terraform-state/terraform.tfstate"
 
     skip_region_validation      = true
     skip_credentials_validation = true
-    skip_requesting_account_id  = true # This option is required to describe backend for Terraform version 1.6.1 or higher.
-    skip_s3_checksum            = true # This option is required to describe backend for Terraform version 1.6.3 or higher.
+    skip_requesting_account_id  = true
+    skip_s3_checksum            = true
   }
 }
 
@@ -63,11 +63,11 @@ module "kubernetes" {
 #   db_prod            = "sw-site-db-prod"
 # }
 
-# module "s3" {
-#   source      = "./modules/s3"
-#   bucket_name = "courseway-bucket"
-#   folder_id   = var.FOLDER_ID
-# }
+module "s3" {
+  source      = "./modules/s3"
+  bucket_name = "courseway-bucket"
+  folder_id   = var.FOLDER_ID
+}
 
 # module "registry" {
 #   source        = "./modules/registry"
