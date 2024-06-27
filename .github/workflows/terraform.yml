@@ -47,7 +47,9 @@ jobs:
             -var="YC_FOLDER_ID=${{ env.YC_FOLDER_ID }}" \
             -var="YC_TOKEN=${{ env.YC_TOKEN }}" \
             -var="ACCESS_KEY=${{ env.ACCESS_KEY }}" \
-            -var="SECRET_KEY=${{ env.SECRET_KEY }}"
+            -var="SECRET_KEY=${{ env.SECRET_KEY }}" \
+            -target=module.s3
+          
 
   deploy_terraform:
     name: "Развертывание Terraform"
