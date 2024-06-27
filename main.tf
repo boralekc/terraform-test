@@ -44,6 +44,13 @@ module "kubernetes" {
   disk_size           = 64
 }
 
+module "semaphore" {
+  source      = "./modules/semaphore"
+  folder_id   = var.FOLDER_ID
+  kubernetes_cluster_host = ""
+  kubernetes_cluster_token = "" 
+}
+
 # module "postgres" {
 #   source             = "./modules/postgres"
 #   folder_id          = var.FOLDER_ID
