@@ -63,11 +63,11 @@ module "kubernetes" {
 #   db_prod            = "sw-site-db-prod"
 # }
 
-module "s3" {
-  source      = "./modules/s3"
-  bucket_name = "courseway-bucket"
-  folder_id   = var.FOLDER_ID
-}
+# module "s3" {
+#   source      = "./modules/s3"
+#   bucket_name = "courseway-bucket"
+#   folder_id   = var.FOLDER_ID
+# }
 
 # module "registry" {
 #   source        = "./modules/registry"
