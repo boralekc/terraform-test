@@ -6,48 +6,102 @@ on:
       - main
 
 jobs:
-  terraform:
-    name: "Terraform"
+  setup_s3:
+    name: "Настройка S3 бакета"
     runs-on: ubuntu-latest
     env:
       working-directory: '${{ github.workspace }}'
-    defaults:
-      run:
-        working-directory: ${{ env.working-directory }}
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    
-    - name: IAM cloud Token
-      id: issue-iam-token
-      uses: yc-actions/yc-iam-token@v1
-      with:
-        yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+      - name: Checkout репозитория
+        uses: actions/checkout@v2
 
-    - name: Set environment variables from secrets
-      run: |
-        echo "ACCESS_KEY=${{ secrets.ACCESS_KEY }}" >> $GITHUB_ENV
-        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
-        echo "YC_CLOUD_ID=${{ secrets.YC_CLOUD_ID }}" >> $GITHUB_ENV
-        echo "YC_FOLDER_ID=${{ secrets.YC_FOLDER_ID }}" >> $GITHUB_ENV
-        echo "YC_TOKEN=${{ steps.issue-iam-token.outputs.token }}" >> $GITHUB_ENV
-    
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_version: 1.8.0
+      - name: IAM cloud Token
+        id: issue-iam-token
+        uses: yc-actions/yc-iam-token@v1
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
 
-    - name: Terraform Format
-      id: fmt
-      run: terraform fmt -check
-      continue-on-error: true    
+      - name: Установка переменных окружения из секретов
+        run: |
+          echo "ACCESS_KEY=${{ secrets.ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+          echo "YC_CLOUD_ID=${{ secrets.YC_CLOUD_ID }}" >> $GITHUB_ENV
+          echo "YC_FOLDER_ID=${{ secrets.YC_FOLDER_ID }}" >> $GITHUB_ENV
+          echo "YC_TOKEN=${{ steps.issue-iam-token.outputs.token }}" >> $GITHUB_ENV
 
-    - name: Initialize Terraform
-      run: terraform init -input=false -backend-config="access_key=${{ env.ACCESS_KEY }}" -backend-config="secret_key=${{ env.SECRET_KEY }}"
+      - name: Установка Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.8.0
 
-    - name: Plan Terraform changes
-      run: terraform plan -input=false -var="DB_USER=${{ env.DB_USER }}" -var="DB_PASSWORD=${{ env.DB_PASSWORD }}" -var="CLOUD_ID=${{ env.YC_CLOUD_ID }}" -var="FOLDER_ID=${{ env.YC_FOLDER_ID }}" -var="YC_TOKEN=${{ env.YC_TOKEN }}" -var="ACCESS_KEY=${{ env.ACCESS_KEY }}" -var="SECRET_KEY=${{ env.SECRET_KEY }}"
+      - name: Инициализация Terraform для S3 бакета
+        run: |
+          terraform init -input=false \
+            -backend-config="access_key=${{ env.ACCESS_KEY }}" \
+            -backend-config="secret_key=${{ env.SECRET_KEY }}"
 
-    - name: Apply Terraform changes
-      run: terraform apply --auto-approve -var="DB_USER=${{ env.DB_USER }}" -var="DB_PASSWORD=${{ env.DB_PASSWORD }}" -var="CLOUD_ID=${{ env.YC_CLOUD_ID }}" -var="FOLDER_ID=${{ env.YC_FOLDER_ID }}" -var="YC_TOKEN=${{ env.YC_TOKEN }}" -var="ACCESS_KEY=${{ env.ACCESS_KEY }}" -var="SECRET_KEY=${{ env.SECRET_KEY }}"
+      - name: Применение изменений для создания S3 бакета
+        run: |
+          terraform apply --auto-approve \
+            -var="YC_CLOUD_ID=${{ env.YC_CLOUD_ID }}" \
+            -var="YC_FOLDER_ID=${{ env.YC_FOLDER_ID }}" \
+            -var="YC_TOKEN=${{ env.YC_TOKEN }}" \
+            -var="ACCESS_KEY=${{ env.ACCESS_KEY }}" \
+            -var="SECRET_KEY=${{ env.SECRET_KEY }}"
+
+  deploy_terraform:
+    name: "Развертывание Terraform"
+    runs-on: ubuntu-latest
+    needs: setup_s3
+    env:
+      working-directory: '${{ github.workspace }}'
+    steps:
+      - name: Checkout репозитория
+        uses: actions/checkout@v2
+
+      - name: IAM cloud Token
+        id: issue-iam-token
+        uses: yc-actions/yc-iam-token@v1
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+      - name: Установка переменных окружения из секретов
+        run: |
+          echo "ACCESS_KEY=${{ secrets.ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+          echo "YC_CLOUD_ID=${{ secrets.YC_CLOUD_ID }}" >> $GITHUB_ENV
+          echo "YC_FOLDER_ID=${{ secrets.YC_FOLDER_ID }}" >> $GITHUB_ENV
+          echo "YC_TOKEN=${{ steps.issue-iam-token.outputs.token }}" >> $GITHUB_ENV
+
+      - name: Установка Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.8.0
+
+      - name: Инициализация Terraform для основного развертывания
+        run: |
+          terraform init -input=false \
+            -backend-config="access_key=${{ env.ACCESS_KEY }}" \
+            -backend-config="secret_key=${{ env.SECRET_KEY }}"
+
+      - name: Планирование изменений Terraform
+        run: |
+          terraform plan -input=false \
+            -var="DB_USER=${{ secrets.DB_USER }}" \
+            -var="DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
+            -var="CLOUD_ID=${{ secrets.YC_CLOUD_ID }}" \
+            -var="FOLDER_ID=${{ secrets.YC_FOLDER_ID }}" \
+            -var="YC_TOKEN=${{ steps.issue-iam-token.outputs.token }}" \
+            -var="ACCESS_KEY=${{ secrets.ACCESS_KEY }}" \
+            -var="SECRET_KEY=${{ secrets.SECRET_KEY }}"
+
+      - name: Применение изменений Terraform
+        run: |
+          terraform apply --auto-approve \
+            -var="DB_USER=${{ secrets.DB_USER }}" \
+            -var="DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
+            -var="CLOUD_ID=${{ secrets.YC_CLOUD_ID }}" \
+            -var="FOLDER_ID=${{ secrets.YC_FOLDER_ID }}" \
+            -var="YC_TOKEN=${{ steps.issue-iam-token.outputs.token }}" \
+            -var="ACCESS_KEY=${{ secrets.ACCESS_KEY }}" \
+            -var="SECRET_KEY=${{ secrets.SECRET_KEY }}"
