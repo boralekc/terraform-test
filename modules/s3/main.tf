@@ -15,7 +15,7 @@ resource "yandex_iam_service_account" "bucket" {
 
 resource "yandex_resourcemanager_folder_iam_binding" "admin" {
   # Сервисному аккаунту назначается роль "editor".
-  folder_id = var.folder_id
+  folder_id = var.FOLDER_ID
   role      = "storage.admin"
   members = [
     "serviceAccount:${yandex_iam_service_account.bucket.id}"
