@@ -1,4 +1,4 @@
-name: Setup S3 Bucket and Terraform
+name: Setup S3 Bucket
 
 on:
   push:
@@ -18,10 +18,14 @@ jobs:
         with:
           terraform_version: 1.8.0
 
+      # Initialize Terraform from the module directory
       - name: Initialize Terraform for S3 bucket
+        working-directory: ./modules/s3  # Replace with your module path
         run: terraform init -input=false
 
+      # Apply changes to create S3 bucket
       - name: Apply changes to create S3 bucket
+        working-directory: ./modules/s3  # Replace with your module path
         run: |
           terraform apply --auto-approve \
             -var="YC_CLOUD_ID=${{ secrets.YC_CLOUD_ID }}" \
@@ -29,7 +33,7 @@ jobs:
             -var="YC_TOKEN=${{ secrets.YC_TOKEN }}" \
             -var="ACCESS_KEY=${{ secrets.ACCESS_KEY }}" \
             -var="SECRET_KEY=${{ secrets.SECRET_KEY }}" \
-            -target=aws_s3_bucket.s3_state
+
 
   deploy_terraform:
     name: "Deploy Terraform"
