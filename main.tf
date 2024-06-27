@@ -44,12 +44,17 @@ module "kubernetes" {
   disk_size           = 64
 }
 
-module "helm" {
-  source          = "./modules/helm"
-  folder_id       = var.FOLDER_ID
-  kubernetes_api  = var.KUBERNETES_API_SERVER
-  kubernetes_token = var.KUBERNETES_TOKEN
+resource "null_resource" "run_ansible" {
+  provisioner "local-exec" {
+    command = <<EOT
+      ansible-playbook -i "${module.kubernetes.cluster_name}," \
+                       -e "kubeconfig=${module.kubernetes.kubeconfig}" \
+                       playbook.yml
+    EOT
+  }
 }
+
+
 # module "postgres" {
 #   source             = "./modules/postgres"
 #   folder_id          = var.FOLDER_ID

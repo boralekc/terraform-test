@@ -25,11 +25,3 @@ variable "ACCESS_KEY" {
 variable "SECRET_KEY" {
   type = string
 }
-
-variable "KUBERNETES_API_SERVER" {
-  type = string
-}
-
-variable "KUBERNETES_TOKEN" {
-  type = string
-}
