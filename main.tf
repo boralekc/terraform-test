@@ -44,13 +44,12 @@ module "kubernetes" {
   disk_size           = 64
 }
 
-module "semaphore" {
-  source      = "./modules/semaphore"
-  folder_id   = var.FOLDER_ID
-  kubernetes_cluster_host = var.KUBERNETES_API_SERVER
-  kubernetes_cluster_token = var.KUBERNETES_TOKEN
+module "helm" {
+  source          = "./modules/helm"
+  folder_id       = var.FOLDER_ID
+  kubernetes_api  = var.KUBERNETES_API_SERVER
+  kubernetes_token = var.KUBERNETES_TOKEN
 }
-
 # module "postgres" {
 #   source             = "./modules/postgres"
 #   folder_id          = var.FOLDER_ID

@@ -3,10 +3,10 @@ variable "folder_id" {
   type        = string
 }
 
-variable "kubernetes_cluster_host" {
+variable "kubernetes_api" {
   description = "Kubernetes cluster API server host"
 }
 
-variable "kubernetes_cluster_token" {
+variable "kubernetes_token" {
   description = "Kubernetes service account token"
 }
