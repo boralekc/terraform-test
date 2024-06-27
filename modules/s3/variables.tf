@@ -4,10 +4,10 @@ variable "bucket_name" {
   default     = "s3-state"  
 }
 
-variable "folder_id" {
-  description = "Folder ID where resources will be created"
-  type        = string
-}
+# variable "folder_id" {
+#   description = "Folder ID where resources will be created"
+#   type        = string
+# }
 
 variable "FOLDER_ID" {
   description = "Folder id"
